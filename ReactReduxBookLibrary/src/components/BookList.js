@@ -60,6 +60,7 @@ function BookList() {
                   <strong>
                     {higlightMatch(book.author, filterData.author)}
                   </strong>
+                  {` (${book.source})`}
                 </div>
                 <div className="book-actions">
                   <span

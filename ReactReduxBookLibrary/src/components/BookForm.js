@@ -1,10 +1,11 @@
 import { useState } from "react";
 import "./BookForm.css";
-import axios from 'axios'
 import { useDispatch } from "react-redux";
 import booksData from "../data/books.json";
 import { createBookWithID } from "../utils/CreateBookWithID";
-import { addBook } from "../redux/bookSlice/bookSlice";
+import { addBook, fetchBook } from "../redux/bookSlice/bookSlice";
+import { thunkFunction } from "../redux/bookSlice/bookSlice";
+import { setError } from "../redux/ErrorSlice/errorSlice";
 function BookForm() {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
@@ -12,7 +13,7 @@ function BookForm() {
 
   function handleAddRandomBook() {
     const randomBook = booksData[Math.floor(Math.random() * booksData.length)];
-    dispatch(addBook(createBookWithID(randomBook)));
+    dispatch(addBook(createBookWithID(randomBook, "random")));
   }
 
   function handleSubmit(e) {
@@ -22,21 +23,17 @@ function BookForm() {
         title,
         author,
       };
-      dispatch(addBook(createBookWithID(book)));
+      dispatch(addBook(createBookWithID(book, "manual")));
       setTitle("");
       setAuthor("");
+    } else {
+      dispatch(setError("Enter title and author fill"));
     }
   }
-  async function handleAddRandomBookViaAPI(){
-    try{
-      const res = await axios.get('http://localhost:4000/random-book')
-      if(res.data && res.data.title && res.data.author){
-        dispatch(addBook(createBookWithID(res.data)));
-      }
-    }catch(error){
-      console.log('error adding random book with api: ' + error.message)
-    }
-      
+
+  function handleAddRandomBookViaAPI() {
+    // dispatch(thunkFunction);
+    dispatch(fetchBook("http://localhost:4000/random-book-delayed"));
   }
   return (
     <div className="app-block book-form">

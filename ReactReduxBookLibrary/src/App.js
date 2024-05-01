@@ -4,6 +4,7 @@ import { BookForm } from "./components/BookForm";
 import { BookList } from "./components/BookList";
 import { Filter } from "./components/Filter";
 import { BrowserRouter } from "react-router-dom";
+import { Error } from "./components/Error";
 function App() {
   return (
     <BrowserRouter>
@@ -20,6 +21,7 @@ function App() {
             <BookList />
           </div>
         </main>
+        {<Error />}
       </div>
     </BrowserRouter>
   );
