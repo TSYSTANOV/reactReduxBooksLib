@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { MiddlewareArray, configureStore } from "@reduxjs/toolkit";
 import errorSlice from "./ErrorSlice/errorSlice";
 import filterSlice from "./filterSlice/filterSlice";
 import bookSlice from "./bookSlice/bookSlice";

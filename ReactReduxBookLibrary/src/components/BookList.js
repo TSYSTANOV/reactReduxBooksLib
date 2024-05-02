@@ -4,7 +4,7 @@ import { BsBookmarkStar } from "react-icons/bs";
 import { BsBookmarkStarFill } from "react-icons/bs";
 import { toogleFavorite, deleteBook } from "../redux/bookSlice/bookSlice";
 function BookList() {
-  const books = useSelector((state) => state.books);
+  const books = useSelector((state) => state.books.books);
   const filterData = useSelector((state) => {
     return state.filter;
   });

@@ -2,8 +2,11 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { createBookWithID } from "../../utils/CreateBookWithID";
 import axios from "axios";
 import { setError } from "../ErrorSlice/errorSlice";
-const initialState = [];
 
+const initialState = {
+  books: [],
+  isLoadingViaAPI: false,
+};
 export const fetchBook = createAsyncThunk(
   "books/fetchBook",
   async (url, thunkAPI) => {
@@ -13,6 +16,8 @@ export const fetchBook = createAsyncThunk(
     } catch (error) {
       thunkAPI.dispatch(setError(error.message));
       throw error;
+      // або
+      // return thunkAPI.rejectWithValue(error)
     }
   }
 );
@@ -21,31 +26,45 @@ const booksSlice = createSlice({
   initialState: initialState,
   reducers: {
     addBook: (state, action) => {
-      return [...state, action.payload];
+      return { ...state, books: [...state.books, action.payload] };
     },
     deleteBook: (state, action) => {
-      return state.filter((item) => item.id !== action.payload);
+      return {
+        ...state,
+        books: state.books.filter((item) => item.id !== action.payload),
+      };
     },
     toogleFavorite: (state, action) => {
-      return state.map((item) => {
-        if (item.id === action.payload) {
-          return {
-            ...item,
-            favorite: !item.favorite,
-          };
-        }
-        return item;
-      });
+      return {
+        ...state,
+        books: state.books.map((item) => {
+          if (item.id === action.payload) {
+            return {
+              ...item,
+              favorite: !item.favorite,
+            };
+          }
+          return item;
+        }),
+      };
     },
   },
   ///first option
   extraReducers: (builder) => {
     builder.addCase(fetchBook.fulfilled, (state, action) => {
+      state.isLoadingViaAPI = false;
       if (action.payload.title && action.payload.author) {
-        state.push(createBookWithID(action.payload, "API"));
+        state.books.push(createBookWithID(action.payload, "API"));
       }
     });
+    builder.addCase(fetchBook.pending, (state, action) => {
+      state.isLoadingViaAPI = true;
+    });
+    builder.addCase(fetchBook.rejected, (state, action) => {
+      state.isLoadingViaAPI = false;
+    });
   },
+
   ///second option
   // extraReducers: {
   //   [fetchBook.fulfilled]: (state, action) => {
@@ -55,6 +74,15 @@ const booksSlice = createSlice({
   //   },
   // },
 });
+// export const thunkFunction = (someParam) => async (dispatch, getState) => {
+//   console.log(someParam);
+// };
+export const thunkFunction = (someParam) => (dispatch, getState, arg) => {
+  console.log(someParam);
+  console.log(dispatch);
+  console.log(getState());
+  console.log(arg);
+};
 // export const thunkFunction = async (dispatch, getState) => {
 //   try {
 //     const res = await axios.get("http://localhost:4000/random-book");
