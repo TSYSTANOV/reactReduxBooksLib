@@ -34,8 +34,7 @@ function BookForm() {
   }
 
   function handleAddRandomBookViaAPI() {
-    // dispatch(fetchBook("http://localhost:4000/random-book-delayed"));
-    dispatch(thunkFunction({ title: "SpiderMan", year: 2008 }));
+    dispatch(fetchBook("http://localhost:4000/random-book-delayed"));
   }
   return (
     <div className="app-block book-form">
